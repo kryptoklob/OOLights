@@ -9,6 +9,7 @@
 
 // Our classes
 #include "ledeffect.cpp"
+#include "symmetrictrails.cpp"
 
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
@@ -16,7 +17,9 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-LedEffect effects[2] = {1, NUM_LEDS-2};
+SymmetricTrailsEffect effect1;
+SymmetricTrailsEffect effect2;
+LedEffect *effects[] = { &effect1, &effect2 };
 
 void setup() {
   // Set up serial connection
@@ -39,13 +42,13 @@ void loop() {
   // 4 - write any output data to serial if necessary
 
   for(int i=0; i<2; i++) {
-    effects[i].render();
+    effects[i] -> render();
   }
 
   // Grab & blend the data from each of our effects
   // I'm sure there's a better way to do this, right now we're just xoring!
   for(int i=0; i<NUM_LEDS-1; i++) {
-    ledData[i] = effects[0].leddata[i] + effects[1].leddata[i];
+    ledData[i] = (effects[0] -> leddata)[i] + (effects[1] -> leddata)[i];
   }
 
   FastLED.show();
