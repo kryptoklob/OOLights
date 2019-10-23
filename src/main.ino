@@ -34,7 +34,7 @@ void loop() {
     effects[i].render();
   }
 
-  // Temporary - right now we're only using the dta from the first effect
+  // Temporary - right now we're only using the data from the first effect
   memmove(&leds, &(effects[0].leddata), NUM_LEDS * sizeof(CRGB));
 
   FastLED.show();
