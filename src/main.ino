@@ -8,7 +8,7 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-LedEffect effects[3] = {1, 50, 100};
+LedEffect effects[2] = {1, NUM_LEDS-2};
 
 void setup() {
   // Set up serial connection
@@ -31,14 +31,14 @@ void loop() {
   // 3 - check keyboard/serial/other devices
   // 4 - write any output data to serial if necessary
 
-  for(int i=0; i<3; i++) {
+  for(int i=0; i<2; i++) {
     effects[i].render();
   }
 
   // Grab & blend the data from each of our effects
   // I'm sure there's a better way to do this, right now we're just xoring!
   for(int i=0; i<NUM_LEDS-1; i++) {
-    ledData[i] = effects[0].leddata[i] + effects[1].leddata[i] + effects[2].leddata[i];
+    ledData[i] = effects[0].leddata[i] | effects[1].leddata[i];
   }
 
   FastLED.show();

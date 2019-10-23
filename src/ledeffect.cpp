@@ -35,7 +35,7 @@ class LedEffect {
       if (index == 0 && direction == 1) { direction = 0; }
       if (index == NUM_LEDS-1 && direction == 0) { direction = 1; }
 
-      leddata.fill_solid(CRGB::Black);
+      leddata.fadeToBlackBy(15);
       leddata[index] = CHSV(hue++, 255, 255);
     }
 };
