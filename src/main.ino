@@ -5,9 +5,10 @@
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
 CRGBArray<NUM_LEDS> leds;
+CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-LedEffect effects[3];
+LedEffect effects[3] = {0, 50, 100};
 
 void setup() {
   // Set up serial connection
@@ -34,8 +35,11 @@ void loop() {
     effects[i].render();
   }
 
-  // Temporary - right now we're only using the data from the first effect
-  memmove(&leds, &(effects[0].leddata), NUM_LEDS * sizeof(CRGB));
+  // Grab & blend the data from each of our effects
+  // I'm sure there's a better way to do this, right now we're just xoring!
+  for(int i=0; i<NUM_LEDS-1; i++) {
+    ledData[i] = effects[0].leddata[i] | effects[1].leddata[i] | effects[2].leddata[i];
+  }
 
   FastLED.show();
 }
