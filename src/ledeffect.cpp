@@ -1,5 +1,5 @@
-#include <FastLed.h>
-#include "variables.h"
+#include <FastLED.h>
+#include "vars.h"
 
 // The LedEffect super class. All instances of leds effects should subclass from this
 class LedEffect {
@@ -35,7 +35,7 @@ class LedEffect {
       if (index == 0 && direction == 1) { direction = 0; }
       if (index == NUM_LEDS-1 && direction == 0) { direction = 1; }
 
-      leddata.fadeToBlackBy(15);
-      leddata[index] = CHSV(hue++, 255, 255);
+      leddata.fadeToBlackBy(10);
+      leddata[index] = CHSV(hue, 255, 128);
     }
 };

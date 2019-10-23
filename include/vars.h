@@ -1,0 +1,3 @@
+// QUICK CHANGE variables
+#define NUM_LEDS 144
+// QUICK CHANGE VARIABLES

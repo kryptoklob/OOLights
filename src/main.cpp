@@ -1,6 +1,14 @@
+// --- This basic sketch / example uses 1 LED strip with 144 Leds
+// --- You can change this in vars.h inside the /include folder
+
+// Fast LED
 #include <FastLED.h>
-#include "variables.h"
-#include "LedEffect.cpp"
+
+// Our custom defines
+#include "vars.h"
+
+// Our classes
+#include "ledeffect.cpp"
 
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
@@ -14,10 +22,9 @@ void setup() {
   // Set up serial connection
   Serial.begin(57600);
   Serial.setTimeout(1500);
-  delay(1000);
 
   // Setup LEDs
-  FastLED.addLeds<WS2812B, 5, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, 13, GRB>(leds, NUM_LEDS);
 
   // Clear LEDS and show the empty frame
   FastLED.clear();
@@ -38,8 +45,9 @@ void loop() {
   // Grab & blend the data from each of our effects
   // I'm sure there's a better way to do this, right now we're just xoring!
   for(int i=0; i<NUM_LEDS-1; i++) {
-    ledData[i] = effects[0].leddata[i] | effects[1].leddata[i];
+    ledData[i] = effects[0].leddata[i] + effects[1].leddata[i];
   }
 
   FastLED.show();
+  FastLED.delay(50);
 }
