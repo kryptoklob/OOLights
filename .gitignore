@@ -54,3 +54,6 @@ dkms.conf
 # Platformio files
 .pio/
 .travis.yml
+
+# Swap files
+**.swp
