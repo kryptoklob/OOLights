@@ -57,3 +57,7 @@ dkms.conf
 
 # Swap files
 **.swp
+
+# More compile stuff
+.clang_complete
+.gcc-flags.json

@@ -1,9 +1,13 @@
 #include <FastLED.h>
 #include "variables.h"
+#include "LedEffect.cpp"
 
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
 CRGBArray<NUM_LEDS> leds;
+
+// Holds all active led effect instances
+LedEffect effects[3];
 
 void setup() {
   // Set up serial connection
@@ -13,11 +17,24 @@ void setup() {
 
   // Setup LEDs
   FastLED.addLeds<WS2812B, 5, GRB>(leds, NUM_LEDS);
+
+  // Clear LEDS and show the empty frame
+  FastLED.clear();
+  FastLED.show();
 }
 
 void loop() {
-  static uint8_t hue=0;
-  leds(0, NUM_LEDS/2 - 1).fill_rainbow(hue++);
-  leds(NUM_LEDS/2, NUM_LEDS-1) = leds(NUM_LEDS/2-1,0);
-  FastLED.delay(30);
+  // Our main loop consists of the following logic:
+  // 1 - iterate through our list of effects and call render() on each one to advance one step
+  // 2 - use a blending technique to blend the effects and render to the output array
+  // 3 - check keyboard/serial/other devices
+  // 4 - write any output data to serial if necessary
+
+  for(int i=0; i<3; i++) {
+    effects[i].render();
+  }
+
+  memmove(&leds, &(effects[0].leddata), NUM_LEDS * sizeof(CRGB));
+
+  FastLED.show();
 }
