@@ -15,8 +15,8 @@ class LedEffect {
     CRGBArray<NUM_LEDS> leddata;
 
     // Default constructor
-    LedEffect() {
-      index=0;
+    LedEffect(uint8_t startIndex=0) {
+      index=startIndex;
       direction=0; // (0 - moving right; 1 - moving left)
     }
 
