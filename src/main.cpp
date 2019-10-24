@@ -3,14 +3,15 @@
 
 // Fast LED & other system imports
 #include <FastLED.h>
-//#include <string>
 
 // Our custom defines
 #include "vars.h"
 
 // Our classes
 #include "ledeffect.cpp"
-#include "symmetrictrails.cpp"
+#include "trails.cpp"
+#include "bpm.cpp"
+#include "strobe.cpp"
 
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
@@ -18,35 +19,43 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-SymmetricTrailsEffect effect1(1, 0, false);
-SymmetricTrailsEffect effect2(NUM_LEDS-1, 1, true);
-LedEffect *effects[] = { &effect1, &effect2 };
+TrailEffect effect1(1, 0, false);
+TrailEffect effect2(NUM_LEDS-1, 1, true);
+StrobeEffect effect3;
+BPMEffect effect4(240);
+// Note that these effects are disabled by default!
+LedEffect *effects[] = { &effect1, &effect2, &effect3, &effect4 };
+uint8_t num_effects = 4;
+uint32_t frame_number = 0;
 
 void setup() {
   // Set up serial connection
   Serial.begin(57600);
   Serial.setTimeout(1500);
 
-  delay(1500);
+  delay(1000);
 
   if (DEBUG) { Serial.println("DEBUG ON"); }
   else { Serial.println("DEBUG OFF"); }
 
   // Setup LEDs
   FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.setBrightness(MAX_BRIGHT);
 
-  // Clear LEDS and show the empty frame for 1 second, then show all white for 1 second, then back to empty frame
-  // Just a simple test to make sure they're working.
-  FastLED.clear();
-  FastLED.show();
-  delay(1000);
-  leds.fill_solid(CRGB(55, 55, 55));
-  FastLED.show();
-  delay(1000);
-  FastLED.clear();
-  FastLED.show();
-  delay(1000);
+  // Clear LEDS and then flash red, green, blue just as a quick test
+  FastLED.clear(); FastLED.show(); FastLED.delay(500);
+  if (DEBUG) {
+    leds.fill_solid(CRGB::Red); FastLED.show(); FastLED.delay(500);
+    leds.fill_solid(CRGB::Green); FastLED.show(); FastLED.delay(500);
+    leds.fill_solid(CRGB::Blue); FastLED.show(); FastLED.delay(500);
+    FastLED.clear(); FastLED.show(); FastLED.delay(500);
+  }
 
+  // Enable whatever effects we want
+  //effect1.enable();
+  //effect2.enable();
+  //effect3.enable();
+  effect4.enable();
 }
 
 void loop() {
@@ -56,19 +65,29 @@ void loop() {
   // 3 - check keyboard/serial/other devices
   // 4 - write any output data to serial if necessary
 
-  for(int i=0; i<2; i++) {
-    if (DEBUG) { Serial.println("Beginning effect render"); }
+  FastLED.clear();
+
+  // Iterate over every effect
+  for(int i=0; i<num_effects; i++) {
+    // Skip any effects that are disabled
+    if (!(effects[i] -> enabled)) {
+      if (DEBUG) { Serial.print("Effect render skipped - effect disabled for effect: "); Serial.println(i); }
+      continue;
+    }
+
+    // Render each effect (data gets stored in the effects' leddata variable)
+    if (DEBUG) { Serial.print("Beginning effect & frame: "); Serial.print(i); Serial.print(" "); Serial.println(frame_number); }
     effects[i] -> render();
-    if (DEBUG) { Serial.println("Done with effect render"); }
+    if (DEBUG) { Serial.print("Done with effect & frame: "); Serial.print(i); Serial.print(" "); Serial.println(frame_number); }
+
+    // Copy the data over to the global array (additively)
+    for (uint8_t j=0; j<NUM_LEDS-1; j++) {
+      ledData[j] += (effects[i] -> leddata)[j];
+    }
   }
 
-  // Grab & blend the data from each of our effects
-  // I'm sure there's a better way to do this, right now we're just xoring!
-  for(int i=0; i<NUM_LEDS-1; i++) {
-    ledData[i] = (effects[0] -> leddata)[i] + (effects[1] -> leddata)[i];
-  }
-
-  if (DEBUG) { Serial.println("Global frame complete"); }
+  if (DEBUG) { Serial.print("Global frame complete: "); Serial.println(frame_number); }
+  if (DEBUG) { frame_number++; }
 
   FastLED.show();
 }
