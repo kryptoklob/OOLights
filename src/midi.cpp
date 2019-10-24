@@ -5,7 +5,7 @@
 #include "vars.h"
 #include "ledeffect.cpp"
 
-// The LedEffect super class. All instances of leds effects should subclass from this
+// We subclass from the LEDEffect abstract class.
 class MidiEffect: public LedEffect {
 
   private:
