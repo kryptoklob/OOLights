@@ -21,12 +21,12 @@ class SymmetricTrailsEffect: public LedEffect {
     //CRGBArray<NUM_LEDS> leddata;
 
     // Default constructor - random starting index, random hue
-    SymmetricTrailsEffect(uint8_t startIndex=0, uint8_t startHue=0) {
+    SymmetricTrailsEffect(uint8_t startIndex=0, uint8_t startHue=0, bool reverse=false) {
       index=startIndex;
       if (startIndex == 0) {
         index = random16() % NUM_LEDS;
       } else index = startIndex;
-      direction=0; // (0 - moving right; 1 - moving left)
+      if (reverse) { direction = 1; } else { direction = 0; }
       if (startHue == 0) {
         hue = random8();
       } else hue = startHue;
@@ -41,7 +41,7 @@ class SymmetricTrailsEffect: public LedEffect {
       if (index == NUM_LEDS-1 && direction == 0) { direction = 1; }
 
       leddata.fadeToBlackBy(10);
-      leddata[index] = CHSV(hue, 255, 128);
+      leddata[index] = CHSV(hue++, 255, 128);
     }
 };
 

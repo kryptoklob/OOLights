@@ -1,8 +1,9 @@
 // --- This basic sketch / example uses 1 LED strip with 144 Leds
 // --- You can change this in vars.h inside the /include folder
 
-// Fast LED
+// Fast LED & other system imports
 #include <FastLED.h>
+//#include <string>
 
 // Our custom defines
 #include "vars.h"
@@ -17,8 +18,8 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-SymmetricTrailsEffect effect1;
-SymmetricTrailsEffect effect2;
+SymmetricTrailsEffect effect1(1, 0, false);
+SymmetricTrailsEffect effect2(NUM_LEDS-1, 1, true);
 LedEffect *effects[] = { &effect1, &effect2 };
 
 void setup() {
@@ -26,12 +27,26 @@ void setup() {
   Serial.begin(57600);
   Serial.setTimeout(1500);
 
-  // Setup LEDs
-  FastLED.addLeds<WS2812B, 13, GRB>(leds, NUM_LEDS);
+  delay(1500);
 
-  // Clear LEDS and show the empty frame
+  if (DEBUG) { Serial.println("DEBUG ON"); }
+  else { Serial.println("DEBUG OFF"); }
+
+  // Setup LEDs
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+
+  // Clear LEDS and show the empty frame for 1 second, then show all white for 1 second, then back to empty frame
+  // Just a simple test to make sure they're working.
   FastLED.clear();
   FastLED.show();
+  delay(1000);
+  leds.fill_solid(CRGB(55, 55, 55));
+  FastLED.show();
+  delay(1000);
+  FastLED.clear();
+  FastLED.show();
+  delay(1000);
+
 }
 
 void loop() {
@@ -42,7 +57,9 @@ void loop() {
   // 4 - write any output data to serial if necessary
 
   for(int i=0; i<2; i++) {
+    if (DEBUG) { Serial.println("Beginning effect render"); }
     effects[i] -> render();
+    if (DEBUG) { Serial.println("Done with effect render"); }
   }
 
   // Grab & blend the data from each of our effects
@@ -51,6 +68,7 @@ void loop() {
     ledData[i] = (effects[0] -> leddata)[i] + (effects[1] -> leddata)[i];
   }
 
+  if (DEBUG) { Serial.println("Global frame complete"); }
+
   FastLED.show();
-  FastLED.delay(50);
 }
