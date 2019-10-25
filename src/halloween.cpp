@@ -11,7 +11,7 @@ class HalloweenEffect: public LedEffect {
   private:
     // Each LedEffect subclass will have its own private variables
     CRGB fading_to = CRGB(CRGB::Purple);
-    uint8_t num_leds_left = NUM_LEDS;
+    uint8_t num_leds_left = NUM_LEDS/2;
 
   public:
     // Default constructor
@@ -23,15 +23,17 @@ class HalloweenEffect: public LedEffect {
     void render() {
       // Randomly pick leds to fade to purple
       // Once done, start fading to orange, then goto 1
-      uint8_t led_number = random8() % NUM_LEDS; // picks a random number between 0 and NUM_LEDS-1
+      uint8_t led_number = random8() % NUM_LEDS/2; // picks a random number between 0 and NUM_LEDS-1
       if (leddata.leds[led_number] != fading_to) {
         num_leds_left--;
         leddata[led_number] = fading_to;
+        leddata[NUM_LEDS - led_number - 1] = fading_to;
       }
       if (num_leds_left == 0) {
         if (fading_to == CRGB(CRGB::Purple)) { fading_to = CRGB::DarkOrange; } else { fading_to = CRGB::Purple; }
-        num_leds_left = NUM_LEDS;
+        num_leds_left = NUM_LEDS/2;
       }
+      leddata.fadeToBlackBy(5);
     }
 };
 
