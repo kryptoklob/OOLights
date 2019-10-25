@@ -27,6 +27,10 @@ BPMEffect effect4(240);
 LedEffect *effects[] = { &effect1, &effect2, &effect3, &effect4 };
 uint8_t num_effects = 4;
 uint32_t frame_number = 0;
+unsigned long last_frame_time = 1;
+unsigned long last_frame_length = 1;
+unsigned long current_frame_time = 1;
+unsigned long framerate = 1;
 
 void setup() {
   // Set up serial connection
@@ -52,9 +56,9 @@ void setup() {
   }
 
   // Enable whatever effects we want
-  //effect1.enable();
-  //effect2.enable();
-  //effect3.enable();
+  effect1.enable();
+  effect2.enable();
+  effect3.enable();
   effect4.enable();
 }
 
@@ -87,7 +91,20 @@ void loop() {
   }
 
   if (DEBUG) { Serial.print("Global frame complete: "); Serial.println(frame_number); }
-  if (DEBUG) { frame_number++; }
+  frame_number++;
+
+  if (FRAMERATE_DEBUG) {
+    current_frame_time = micros();
+    last_frame_length = current_frame_time - last_frame_time;
+    last_frame_time = current_frame_time;
+    framerate = 1000000 / last_frame_length;
+    // framerate = 1,000,000 / micros_frametime;
+    // print framerate every 100 cycles so that the serial printing time doesn't affect it much
+    if(frame_number % 100 == 1) {
+      Serial.print("Framerate: ");
+      Serial.println(framerate);
+    }
+  }
 
   FastLED.show();
 }
