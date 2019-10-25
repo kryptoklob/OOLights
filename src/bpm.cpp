@@ -25,13 +25,13 @@ class BPMEffect: public LedEffect {
     BPMEffect(uint32_t suppliedBpm) {
       bpm = suppliedBpm;
       hue = 0;
-      beat_size = 8;
+      beat_size = 4;
       cutoff = 65536 / beat_size;
     }
 
     // Each LedEffect subclass must implement render(), which renders the next frame to the ledData array
     void render() {
-      if (beat16(bpm) < cutoff) { leddata(NUM_LEDS/2 - 5, NUM_LEDS/2 + 5) = CHSV(hue++, 255, 255); }
+      if (beat16(bpm) < cutoff) { leddata(NUM_LEDS-11, NUM_LEDS-1) = CHSV(hue++, 255, 255); leddata(0, 10) = CHSV(hue, 255, 255); }
       else { leddata.fill_solid(CRGB::Black); }
     }
 

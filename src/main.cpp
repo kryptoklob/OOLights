@@ -23,7 +23,7 @@ CRGBSet ledData(leds(0, NUM_LEDS));
 TrailEffect effect1(1, 0, false);
 TrailEffect effect2(NUM_LEDS-1, 1, true);
 StrobeEffect effect3;
-BPMEffect effect4(240);
+BPMEffect effect4(127);
 HalloweenEffect effect5;
 // Note that these effects are disabled by default!
 LedEffect *effects[] = { &effect1, &effect2, &effect3, &effect4, &effect5 };
@@ -62,7 +62,7 @@ void setup() {
   //effect1.enable();
   //effect2.enable();
   //effect3.enable();
-  //effect4.enable();
+  effect4.enable();
   effect5.enable();
 }
 
