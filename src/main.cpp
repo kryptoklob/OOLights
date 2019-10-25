@@ -101,8 +101,10 @@ void loop() {
     // framerate = 1,000,000 / micros_frametime;
     // print framerate every 100 cycles so that the serial printing time doesn't affect it much
     if(frame_number % 100 == 1) {
-      Serial.print("Framerate: ");
-      Serial.println(framerate);
+      Serial.print("Framerate, frametime: ");
+      Serial.print(framerate);
+      Serial.print(" ");
+      Serial.println(last_frame_length);
     }
   }
 
