@@ -13,12 +13,14 @@ class TrailEffect: public LedEffect {
     uint8_t index;
     bool direction;
     uint8_t hue;
+    uint8_t rotate_hue;
 
 
   public:
     // Default constructor - random starting index, random hue, going forward
-    TrailEffect(uint8_t startIndex=0, uint8_t startHue=0, bool reverse=false) {
+    TrailEffect(uint8_t startIndex=0, uint8_t startHue=0, bool reverse=false, bool enableHueRotation=true) {
       index=startIndex;
+      rotate_hue = enableHueRotation;
       if (startIndex == 0) {
         index = random16() % NUM_LEDS;
       } else index = startIndex;
@@ -34,8 +36,9 @@ class TrailEffect: public LedEffect {
       if (index == 0 && direction == 1) { direction = 0; }
       if (index == NUM_LEDS-1 && direction == 0) { direction = 1; }
 
-      leddata.fadeToBlackBy(10);
-      leddata[index] = CHSV(hue++, 255, 128);
+      leddata.fadeToBlackBy(13);
+      leddata[index] = CHSV(hue, 255, 128);
+      if (rotate_hue) {hue++;}
     }
 };
 

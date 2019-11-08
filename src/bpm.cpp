@@ -32,7 +32,7 @@ class BPMEffect: public LedEffect {
     // Each LedEffect subclass must implement render(), which renders the next frame to the ledData array
     void render() {
       if (beat16(bpm) < cutoff) { leddata(NUM_LEDS-11, NUM_LEDS-1) = CHSV(hue++, 255, 255); leddata(0, 10) = CHSV(hue, 255, 255); }
-      else { leddata.fill_solid(CRGB::Black); }
+      leddata.fadeToBlackBy(15);
     }
 
     void setBPM(uint32_t suppliedBPM) {
