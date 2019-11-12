@@ -13,6 +13,7 @@
 #include "bpm.cpp"
 #include "strobe.cpp"
 #include "halloween.cpp"
+#include "cylon.cpp"
 
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
@@ -20,13 +21,10 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-TrailEffect effect1(1, 96, false, false);
-TrailEffect effect2(NUM_LEDS-1, 160, true, false);
-StrobeEffect effect3;
-BPMEffect effect4(127);
-HalloweenEffect effect5;
+CylonEffect effect1;
+
 // Note that these effects are disabled by default!
-LedEffect *effects[] = { &effect1, &effect2, &effect3, &effect4, &effect5 };
+LedEffect *effects[] = { &effect1 };
 uint8_t num_effects = 5;
 uint32_t frame_number = 0;
 unsigned long last_frame_time = 1;
@@ -62,10 +60,6 @@ void setup() {
 
   // Enable whatever effects we want
   effect1.enable();
-  effect2.enable();
-  //effect3.enable();
-  //effect4.enable();
-  //effect5.enable();
 }
 
 void renderActiveEffects() {
@@ -90,7 +84,7 @@ void renderActiveEffects() {
 }
 
 void loop() {
-  EVERY_N_MILLIS(35) {
+  EVERY_N_MILLIS(10) {
     FastLED.clear();
     renderActiveEffects();
     FastLED.show();
