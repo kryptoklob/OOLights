@@ -7,7 +7,7 @@
 // Our custom defines
 #include "vars.h"
 
-// Our classes
+// Our led effect classes
 #include "ledeffect.cpp"
 #include "trails.cpp"
 #include "bpm.cpp"
@@ -20,11 +20,12 @@
 CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
-// Holds all active led effect instances
+// Create effects here:
 CylonEffect effect1(160,4);
 
 // Note that these effects are disabled by default!
 // @TODO switch to c++ vectors and implement a queue instead of array
+// This array holds all effects:
 LedEffect *effects[] = { &effect1 };
 uint8_t num_effects = 1;
 
