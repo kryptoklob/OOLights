@@ -25,7 +25,7 @@ class CylonEffect: public LedEffect {
     // Each LedEffect subclass must implement render(), which renders the next frame to the ledData array
     void render() {
       // At 200 fps, this goes about 4x too fast. Let's slow it down.
-      // Only render once every 4 calls to render (by defaul, also uses provided speed divisor)
+      // Only render once every 4 calls to render (by default, also uses provided speed divisor)
       counter++;
       if (counter%speedDivisor != 0) { return; }
 
