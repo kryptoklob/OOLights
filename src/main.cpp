@@ -21,7 +21,7 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-CylonEffect effect1(160,8);
+CylonEffect effect1(160,4);
 
 // Note that these effects are disabled by default!
 // @TODO switch to c++ vectors and implement a queue instead of array
