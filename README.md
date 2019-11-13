@@ -9,7 +9,8 @@ combine rendered effects to send to the actual LED strip.
 
 
 Timing is controlled by the `EVERY_N_MILLIS` loop at the bottom of `main.cpp`; on an Arduino Mega 2560,
-I was able to achieve a minimum frame-time of 10ms (200fps). This would be much higher on a Teensy.
+I was able to achieve a minimum frame-time of 10ms (200fps) with 6 effects running at once.
+This would be much higher on a Teensy.
 
 
 Configuration settings can be found in `include/vars.h` for things such as # of leds and pin assignments.
