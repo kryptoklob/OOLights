@@ -7,7 +7,7 @@
 // This is the LedEffect abstract class. All other led effects should implement the required functions here.
 class LedEffect {
   protected:
-    // The speed divisor controls how fast the effects runs.
+    // The speed divisor controls how fast the effect runs.
     // Higher speed divisor = slower effect.
     // 1 = full speed.
     uint8_t speedDivisor;
