@@ -23,7 +23,6 @@ use this codebase with the Arduino IDE, but you'll have to mess around with the 
 and locations of files in order for the IDE to see everything it needs to.
 
 ## TODO (Soon)
-- Switch from array to std::vector for led effect instance storage
 - Implement a way to add/remove effects live
 
 ## TODO (SoonTM)
