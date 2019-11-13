@@ -2,6 +2,7 @@
 #define NUM_LEDS 134
 #define LED_PIN 8
 #define CLOCK_PIN 9
-#define STARTUP_DEBUG true
+#define STARTUP_DEBUG false
 #define MAX_BRIGHT 128
+#define SERIAL_BAUDRATE 115200
 // QUICK CHANGE VARIABLES
