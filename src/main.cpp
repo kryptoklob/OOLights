@@ -59,7 +59,7 @@ void renderActiveEffects() {
       continue;
     }
 
-    // Call the effect's render() method, which stores the rendered led data in an instance varf
+    // Call the effect's render() method, which stores the rendered led data in an instance var
     effects[i] -> render();
 
     // Copy the led data over to the global array (additively)
