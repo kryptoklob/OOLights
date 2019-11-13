@@ -16,6 +16,12 @@ This would be much higher on a Teensy.
 
 Configuration settings can be found in `include/vars.h` for things such as # of leds and pin assignments.
 
+## Setup
+This code probably will not open or compile within the base Arduino IDE; I use
+[PlatformIO](https://platformio.org/platformio-ide) to code/compile/upload. You /can/
+use this codebase with the Arduino IDE, but you'll have to mess around with the imports
+and locations of files in order for the IDE to see everything it needs to.
+
 ## TODO (Soon)
 - Switch from array to std::vector for led effect instance storage
 - Implement a way to add/remove effects live
