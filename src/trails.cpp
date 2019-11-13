@@ -7,14 +7,11 @@
 
 // We subclass from the LedEffect abstract class
 class TrailEffect: public LedEffect {
-
   private:
-    // Each LedEffect subclass will have its own private variables
     uint8_t index;
     bool direction;
     uint8_t hue;
     uint8_t rotate_hue;
-
 
   public:
     // Default constructor - random starting index, random hue, going forward

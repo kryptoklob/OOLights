@@ -7,30 +7,27 @@
 
 // We subclass from the LedEffect abstract class
 class CylonEffect: public LedEffect {
-
   private:
-    // Each LedEffect subclass will have its own private variables
     uint8_t index;
     uint8_t hue;
-    uint8_t counter;
     char direction; // 0 = right, 1 = left
 
   public:
-    // Default constructor - random starting index, random hue, going forward
-    CylonEffect() {
+    // Default constructor - color red, 4x slowdown
+    CylonEffect(uint8_t providedHue=0, uint8_t providedSpeedDivisor=4) {
       index = 0;
       direction = 0;
-      hue = 0;
       counter = 0;
+      speedDivisor = providedSpeedDivisor;
+      hue = providedHue;
     }
 
     // Each LedEffect subclass must implement render(), which renders the next frame to the ledData array
     void render() {
       // At 200 fps, this goes about 4x too fast. Let's slow it down.
-      // Only render once every 4 calls to render.
+      // Only render once every 4 calls to render (by defaul, also uses provided speed divisor)
       counter++;
-      if (counter%4 != 0) { return; }
-
+      if (counter%speedDivisor != 0) { return; }
 
       if (index == 0 && direction == 1) {
         // Going left and we're at the first led, reverse direction
@@ -40,9 +37,13 @@ class CylonEffect: public LedEffect {
         direction = 1;
       }
 
+      // Increment or decrement the led per direction
       if (direction==0) { index++; } else { index--; }
 
-      leddata[index] = CRGB::Red;
+      // Turn on the led.
+      leddata[index] = CHSV(hue, 255, 255);
+
+      // Fade the whole damn thing
       leddata.nscale8(225);
     }
 };

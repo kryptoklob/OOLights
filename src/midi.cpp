@@ -7,11 +7,7 @@
 
 // We subclass from the LEDEffect abstract class.
 class MidiEffect: public LedEffect {
-
   private:
-    // Each LedEffect subclass will have its own private variables
-
-
 
   public:
     // Default constructor

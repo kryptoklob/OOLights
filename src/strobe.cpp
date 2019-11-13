@@ -7,9 +7,7 @@
 
 // We subclass from the LEDEffect abstract class.
 class StrobeEffect: public LedEffect {
-
   private:
-    // Each LedEffect subclass will have its own private variables
     uint8_t bright;
     uint8_t hue;
 

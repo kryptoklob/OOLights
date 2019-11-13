@@ -21,28 +21,15 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Holds all active led effect instances
-CylonEffect effect1;
+CylonEffect effect1(160,8);
 
 // Note that these effects are disabled by default!
+// @TODO switch to c++ vectors and implement a queue instead of array
 LedEffect *effects[] = { &effect1 };
-uint8_t num_effects = 5;
-uint32_t frame_number = 0;
-unsigned long last_frame_time = 1;
-unsigned long last_frame_length = 1;
-unsigned long current_frame_time = 1;
-unsigned long framerate = 1;
+uint8_t num_effects = 1;
 
 void setup() {
-  // Set up serial connection
-  //Serial.begin(57600);
-  //Serial.setTimeout(1500);
-
   delay(1000);
-
-  /*
-  if (DEBUG) { Serial.println("DEBUG ON"); }
-  else { Serial.println("DEBUG OFF"); }
-  */
 
   // Setup LEDs
   FastLED.addLeds<APA102, LED_PIN, CLOCK_PIN, BGR>(leds, NUM_LEDS);
@@ -51,7 +38,8 @@ void setup() {
 
   // Clear LEDS and then flash red, green, blue just as a quick test
   FastLED.clear(); FastLED.show(); FastLED.delay(500);
-  if (DEBUG) {
+
+  if (STARTUP_DEBUG) {
     leds.fill_solid(CRGB::Red); FastLED.show(); FastLED.delay(500);
     leds.fill_solid(CRGB::Green); FastLED.show(); FastLED.delay(500);
     leds.fill_solid(CRGB::Blue); FastLED.show(); FastLED.delay(500);
@@ -65,24 +53,22 @@ void setup() {
 void renderActiveEffects() {
   // Iterate over every effect
   for(int i=0; i<num_effects; i++) {
-    // Skip any effects that are disabled
+    // Skip inactive / disabled effects
     if (!(effects[i] -> enabled)) {
-      //if (DEBUG) { Serial.print("Effect render skipped - effect disabled for effect: "); Serial.println(i); }
       continue;
     }
 
-    // Render each effect (data gets stored in the effects' leddata variable)
-    //if (DEBUG) { Serial.print("Beginning effect & frame: "); Serial.print(i); Serial.print(" "); Serial.println(frame_number); }
+    // Call the effect's render() method, which stores the rendered led data in an instance varf
     effects[i] -> render();
-    //if (DEBUG) { Serial.print("Done with effect & frame: "); Serial.print(i); Serial.print(" "); Serial.println(frame_number); }
 
-    // Copy the data over to the global array (additively)
+    // Copy the led data over to the global array (additively)
     for (uint8_t j=0; j<NUM_LEDS-1; j++) {
       ledData[j] += (effects[i] -> leddata)[j];
     }
   }
 }
 
+// 10ms = 200fps
 void loop() {
   EVERY_N_MILLIS(10) {
     FastLED.clear();
