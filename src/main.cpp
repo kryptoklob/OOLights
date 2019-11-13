@@ -3,6 +3,7 @@
 
 // Fast LED & other system imports
 #include <FastLED.h>
+#include <Vector.h>
 
 // Our custom defines
 #include "vars.h"
@@ -23,11 +24,9 @@ CRGBSet ledData(leds(0, NUM_LEDS));
 // Create effects here:
 CylonEffect effect1(160,4);
 
-// Note that these effects are disabled by default!
-// @TODO switch to c++ vectors and implement a queue instead of array
-// This array holds all effects:
-LedEffect *effects[] = { &effect1 };
-uint8_t num_effects = 1;
+// Vector class to hold the effects
+// Very similar to c++ std::vector - see https://github.com/tomstewart89/Vector
+Vector<LedEffect*> effects;
 
 void setup() {
   delay(1000);
@@ -47,13 +46,16 @@ void setup() {
     FastLED.clear(); FastLED.show(); FastLED.delay(500);
   }
 
+  // Add effects to the Vector array
+  effects.PushBack(&effect1);
+
   // Enable whatever effects we want
   effect1.enable();
 }
 
 void renderActiveEffects() {
   // Iterate over every effect
-  for(int i=0; i<num_effects; i++) {
+  for(int i=0; i<effects.Size(); i++) {
     // Skip inactive / disabled effects
     if (!(effects[i] -> enabled)) {
       continue;
