@@ -15,6 +15,8 @@
 #include "strobe.cpp"
 #include "halloween.cpp"
 #include "cylon.cpp"
+#include "cubiccylon.cpp"
+#include "fadingwaves.cpp"
 
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
@@ -22,7 +24,8 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Create effects here:
-CylonEffect effect1(160,4);
+//CylonEffect effect1(160,4);
+CubicCylonEffect effect1;
 
 // Vector class to hold the effects
 // Very similar to c++ std::vector - see https://github.com/tomstewart89/Vector
