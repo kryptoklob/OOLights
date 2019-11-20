@@ -14,17 +14,19 @@ class CubicCylonEffect: public LedEffect {
     uint8_t hueOffset; // How offset each dot is in hue from the other
     uint8_t bpm; // How many cycles we complete in a minute
     bool trails; // Whether or not each dot is going to have trails
+    bool useORBlendMode;
 
   public:
     // Default constructor
     // Note: many dots with trails make for a cool Aurora-like effect!
     // 48 dots with 15 bpm is pretty.
-    CubicCylonEffect(uint8_t howManyDots=1, uint8_t providedBPM = 13, bool trailsEnabled=false) {
+    CubicCylonEffect(uint8_t howManyDots=1, uint8_t providedBPM = 13, bool trailsEnabled=false, bool changeBlendMode=true) {
       numDots = howManyDots;
       phaseOffset = 32678 / numDots;
       hueOffset = 255 / numDots;
       bpm = providedBPM;
       trails = trailsEnabled;
+      useORBlendMode = changeBlendMode;
     }
 
     // Each LedEffect subclass must implement render(), which renders the next frame to the ledData array
@@ -35,7 +37,8 @@ class CubicCylonEffect: public LedEffect {
 
       for (uint8_t i=0; i<numDots; i++) {
         uint8_t index = beatsin16(bpm, 1, NUM_LEDS-2, 2513, phaseOffset*(i*2));
-        leddata(index-1, index+1) |= CHSV(i*hueOffset, 255, 255);
+        if (useORBlendMode) {leddata(index-1, index+1) |= CHSV(i*hueOffset, 255, 255);}
+        else {leddata(index-1, index+1) = CHSV(i*hueOffset, 255, 255);}
       }
     }
 };
