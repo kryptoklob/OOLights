@@ -13,7 +13,7 @@ class CubicCylonEffect: public LedEffect {
 
   public:
     // Default constructor - color red, 4x slowdown
-    CubicCylonEffect(uint8_t providedHue=0, uint8_t providedSpeedDivisor=4) {
+    CubicCylonEffect() {
 
     }
 
