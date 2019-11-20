@@ -19,9 +19,9 @@ class CubicCylonEffect: public LedEffect {
 
     // Each LedEffect subclass must implement render(), which renders the next frame to the ledData array
     void render() {
-      leddata.fadeToBlackBy(20);
-      uint8_t index = beatsin16(13, 0, NUM_LEDS-1);
-      leddata[index] = CRGB::Red;
+      leddata(0, NUM_LEDS-1) = CRGB::Black;
+      uint8_t index = beatsin16(13, 1, NUM_LEDS-2);
+      leddata(index-1, index+1) = CRGB::Red;
     }
 };
 
