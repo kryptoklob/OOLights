@@ -25,7 +25,7 @@ CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Create effects here:
 //CylonEffect effect1(160,4);
-CubicCylonEffect effect1;
+CubicCylonEffect effect1(2, 10, true);
 
 // Vector class to hold the effects
 // Very similar to c++ std::vector - see https://github.com/tomstewart89/Vector
