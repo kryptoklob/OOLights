@@ -17,6 +17,8 @@ class CubicCylonEffect: public LedEffect {
 
   public:
     // Default constructor
+    // Note: many dots with trails make for a cool Aurora-like effect!
+    // 48 dots with 15 bpm is pretty.
     CubicCylonEffect(uint8_t howManyDots=1, uint8_t providedBPM = 13, bool trailsEnabled=false) {
       numDots = howManyDots;
       phaseOffset = 32678 / numDots;
