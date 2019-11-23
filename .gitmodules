@@ -1,3 +1,11 @@
 [submodule "lib/FastLED"]
 	path = lib/FastLED
 	url = https://github.com/FastLED/FastLED.git
+
+[submodule "lib/Vector"]
+  path = lib/Vector
+  url = https://github.com/tomstewart89/Vector.git
+
+[submodule "lib/arduino_midi_library"]
+  path = lib/arduino_midi_library
+  url = https://github.com/FortySevenEffects/arduino_midi_library.git
