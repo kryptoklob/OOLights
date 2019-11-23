@@ -5,6 +5,12 @@
 #include <FastLED.h>
 #include <Vector.h>
 
+// Comment out the below if NOT using ESP32
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
+
 // Our custom defines
 #include "vars.h"
 
@@ -24,7 +30,7 @@ CRGBArray<NUM_LEDS> leds;
 CRGBSet ledData(leds(0, NUM_LEDS));
 
 // Create effects here:
-//CylonEffect effect1(160,4);
+// CylonEffect effect1(160,4);
 CubicCylonEffect effect1(24, 15, true, true);
 
 // Vector class to hold the effects
@@ -32,13 +38,19 @@ CubicCylonEffect effect1(24, 15, true, true);
 Vector<LedEffect*> effects;
 
 void setup() {
-  Serial.println("<BEGIN SETUP>");
-
   // Enable Serial
-  Serial.begin(SERIAL_BAUDRATE);
-  delay(1000);
+  if (SERIAL_ENABLED) {
+    Serial.begin(SERIAL_BAUDRATE);
+    delay(1000);
+  }
+
+  enableWifi();
+
+  
+
 
   // Setup LEDs
+  Serial.println("<BEGIN SETUP>");
   FastLED.addLeds<APA102, LED_PIN, CLOCK_PIN, BGR>(leds, NUM_LEDS);
   FastLED.setBrightness(MAX_BRIGHT);
   FastLED.setCorrection(TypicalLEDStrip);
@@ -127,8 +139,56 @@ void displayEffectData() {
   Serial.println(" ");
 }
 
+void enableWifi() {
+  // Enable Wifi (!)  
+  // Comment out the below if NOT using ESP32
+  WiFi.mode(WIFI_STA);
+  WiFi.begin("klobfi", "nootnoot");
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("Wifi connection failed! Rebooting...");
+    delay(5000);
+    ESP.restart();
+  }
+
+  // Give our wireless guy a friendly name
+  ArduinoOTA.setHostname("firefly");
+  ArduinoOTA
+    .onStart([]() {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH)
+        type = "sketch";
+      else // U_SPIFFS
+        type = "filesystem";
+
+      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+      Serial.println("Start updating " + type);
+    })
+    .onEnd([]() {
+      Serial.println("\nEnd");
+    })
+    .onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    })
+    .onError([](ota_error_t error) {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    });
+
+  ArduinoOTA.begin();
+
+  Serial.println("Ready");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
 // 10ms = 200fps
 void loop() {
+  ArduinoOTA.handle();
+
   EVERY_N_MILLIS(10) {
     FastLED.clear();
     renderActiveEffects();
