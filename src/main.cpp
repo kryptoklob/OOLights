@@ -6,16 +6,14 @@
 #include <Vector.h>
 
 // Comment out the below if NOT using ESP32
-/*
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-*/
 
 // Our custom defines
 #include "vars.h"
-#include "cube_side_defines.h"
+//#include "cube_side_defines.h"
 
 // Our led effect classes
 #include "ledeffect.cpp"
@@ -29,27 +27,32 @@
 
 // Create the master led array
 // Declarations such as NUM_LEDS... are in variables.h
-// CRGBArray<NUM_LEDS> leds;
-// CRGBSet ledData(leds(0, NUM_LEDS));
+CRGBArray<NUM_LEDS> leds;
+CRGBSet ledData(leds(0, NUM_LEDS));
 
 // The actual led data arrays (see RGBSet / CRGBArray reference on FastLED Github)
+/*
 CRGBArray<NUM_LEDS_FACE_ONE> leds_face_one;
 CRGBArray<NUM_LEDS_FACE_TWO> leds_face_two;
 CRGBArray<NUM_LEDS_FACE_THREE> leds_face_three;
 CRGBArray<NUM_LEDS_FACE_FOUR> leds_face_four;
 CRGBArray<NUM_LEDS_FACE_FIVE> leds_face_five;
 CRGBArray<NUM_LEDS_FACE_SIX> leds_face_six;
+*/
 
 // CRGBSets to control the leds
 // @TODO figure out which one is backwards and apply the negative length modifier to fix
+/*
 CRGBSet face_one_mapping(leds_face_one, NUM_LEDS_FACE_ONE);
 CRGBSet face_two_mapping(leds_face_two, NUM_LEDS_FACE_TWO);
 CRGBSet face_three_mapping(leds_face_three, NUM_LEDS_FACE_THREE);
 CRGBSet face_four_mapping(leds_face_four, NUM_LEDS_FACE_FOUR);
 CRGBSet face_five_mapping(leds_face_five, NUM_LEDS_FACE_FIVE);
 CRGBSet face_six_mapping(leds_face_six, NUM_LEDS_FACE_SIX);
+*/
 
 // Here we go:
+/*
 CRGBSet face_one_mappings[4] = {
   CRGBSet(face_one_mapping, FACE_ONE_SIDE_ONE_START, FACE_ONE_SIDE_ONE_END),
   CRGBSet(face_one_mapping, FACE_ONE_SIDE_TWO_START, FACE_ONE_SIDE_TWO_END),
@@ -77,13 +80,13 @@ CRGBSet face_four_mappings[4] = {
   CRGBSet(face_four_mapping, FACE_FOUR_SIDE_THREE_START, FACE_FOUR_SIDE_THREE_END),
   CRGBSet(face_four_mapping, FACE_FOUR_SIDE_FOUR_START, FACE_FOUR_SIDE_FOUR_END)
 };
+*/
 
 // Now that we have these mappings, let's create a data structure that holds which direction the
 // leds need to go in order to have things like "all up", "all down", "all towards mid" and so on.
 // Note that the shortest side length we have is 57 leds.
 // The led effect will ahve a "reference" lenght of 60 leds (max side length), which can be adjusted
 // down to the min of 57 leds for sides that need it (by selectively copying to cut out non-vital leds)
-// @TODO create data structure here?
 
 // Create effects here:
 // CylonEffect effect1(160,4);
@@ -103,6 +106,8 @@ void setup() {
   //enableWifi();
 
   Serial.println("<BEGIN SETUP>");
+
+  /*
   // -- Six strips of LEDS, each nominally 240 leds (but slightly less) -------------------- //
 	FastLED.addLeds<LED_TYPE, LED_PIN_ONE, COLOR_ORDER>(leds_face_one, NUM_LEDS_FACE_ONE);
   FastLED.addLeds<LED_TYPE, LED_PIN_TWO, COLOR_ORDER>(leds_face_two, NUM_LEDS_FACE_TWO);
@@ -111,19 +116,22 @@ void setup() {
 	FastLED.addLeds<LED_TYPE, LED_PIN_FIVE, COLOR_ORDER>(leds_face_five, NUM_LEDS_FACE_FIVE);
 	FastLED.addLeds<LED_TYPE, LED_PIN_SIX, COLOR_ORDER>(leds_face_six, NUM_LEDS_FACE_SIX);
   // --------------------------------------------------------------------------------------- //
+  */
+
+  FastLED.addLeds<APA102, LED_PIN, CLOCK_PIN, BGR>(leds, NUM_LEDS);
+
   FastLED.setBrightness(MAX_BRIGHT);
   FastLED.setCorrection(TypicalLEDStrip);
 
   // Clear LEDS and then flash red, green, blue just as a quick test
   FastLED.clear(); FastLED.show(); FastLED.delay(500);
 
-  /*
   if (STARTUP_DEBUG) {
     leds.fill_solid(CRGB::Red); FastLED.show(); FastLED.delay(500);
     leds.fill_solid(CRGB::Green); FastLED.show(); FastLED.delay(500);
     leds.fill_solid(CRGB::Blue); FastLED.show(); FastLED.delay(500);
     FastLED.clear(); FastLED.show(); FastLED.delay(500);
-  }*/
+  }
 
   // Add effects to the Vector array
   effects.PushBack(&effect1);
@@ -135,6 +143,7 @@ void setup() {
   Serial.println(" ");
 }
 
+/*
 // Given a pointer to a source set & a destination set, shrink the source
 // to fit the destination and copy elements over (additively)
 void shrinkCopy(CRGBSet* source, CRGBSet* destination) {
@@ -167,6 +176,7 @@ void shrinkCopy(CRGBSet* source, CRGBSet* destination) {
     return;
   }
 }
+*/
 
 void renderActiveEffects() {
   // Iterate over every effect
@@ -179,6 +189,12 @@ void renderActiveEffects() {
     // Call the effect's render() method, which stores the rendered led data in an instance var
     effects[i] -> render();
 
+		// Copy the led data ovber to the global array (additively)
+		for (uint8_t j=0; j<NUM_LEDS-1; j++) {
+			ledData[j] += (effects[i] -> leddata)[j];
+		}
+
+		/*
     // Copy the led data over to the global array (additively)
     for (uint8_t j=0; j<4; j++) {
       shrinkCopy(&(effects[i] -> leddata), &(face_one_mappings[j]));
@@ -186,6 +202,7 @@ void renderActiveEffects() {
       shrinkCopy(&(effects[i] -> leddata), &(face_three_mappings[j]));
       shrinkCopy(&(effects[i] -> leddata), &(face_four_mappings[j]));
     }
+		*/
   }
 }
 
@@ -235,9 +252,8 @@ void displayEffectData() {
   Serial.println(" ");
 }
 
-/*
 void enableWifi() {
-  // Enable Wifi (!)  
+  // Enable Wifi (!)
   // Comment out the below if NOT using ESP32
   WiFi.mode(WIFI_STA);
   WiFi.begin("klobfi", "nootnoot");
@@ -281,7 +297,6 @@ void enableWifi() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 }
-*/
 
 // 10ms = 200fps
 void loop() {
