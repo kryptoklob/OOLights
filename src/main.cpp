@@ -91,6 +91,10 @@ CRGBSet face_four_mappings[4] = {
 // Create effects here:
 // CylonEffect effect1(160,4);
 CubicCylonEffect effect1(24, 15, true, true);
+BPMEffect effect2(120);
+StrobeEffect effect3(100);
+TrailEffect effect4;
+CylonEffect effect5;
 
 // Vector class to hold the effects
 // Very similar to c++ std::vector - see https://github.com/tomstewart89/Vector
@@ -135,9 +139,13 @@ void setup() {
 
   // Add effects to the Vector array
   effects.PushBack(&effect1);
+  effects.PushBack(&effect2);
+  effects.PushBack(&effect3);
+  effects.PushBack(&effect4);
+  effects.PushBack(&effect5);
 
   // Enable whatever effects we want
-  effect1.enable();
+  //effect1.enable();
 
   Serial.println("<END SETUP>");
   Serial.println(" ");
